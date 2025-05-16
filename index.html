@@ -1,48 +1,82 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Padel Blindex - Tres Algarrobos</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f2f2f2;
-      text-align: center;
+      font-family: Arial, sans-serif;
+      background: #f1f1f1;
+      margin: 0;
+      padding: 0;
     }
-    h1 {
-      color: #00796B;
-      margin-top: 20px;
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    main {
+      padding: 20px;
     }
     .turno {
-      margin: 10px;
-      padding: 10px;
-      border-radius: 8px;
-      display: inline-block;
-      width: 200px;
       background: white;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border: 1px solid #ccc;
+      border-left: 5px solid #007bff;
+      margin-bottom: 10px;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 8px;
     }
-    .libre {
-      border: 2px solid green;
+    .disponible {
+      color: green;
+      font-weight: bold;
     }
-    .ocupado {
-      border: 2px solid red;
-      opacity: 0.5;
+    .reservado {
+      color: red;
+      font-weight: bold;
     }
     button {
-      margin-top: 10px;
+      padding: 5px 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
     }
   </style>
 </head>
 <body>
-  <h1>Padel Blindex - Tres Algarrobos</h1>
-  <div id="agenda"></div>
+  <header>
+    🏓 Padel Blindex - Tres Algarrobos 🏓
+  </header>
+  <main id="agenda">
+    Cargando turnos...
+  </main>
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
+  <script>
+    // ⚠️ Reemplazá esta parte con tu configuración real de Firebase:
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyCbF1MRSNxEShlOZ2PIPH1op91CvIiUexI",
   authDomain: "padel-blindex.firebaseapp.com",
@@ -53,59 +87,54 @@ const firebaseConfig = {
   measurementId: "G-SMPLB9YYMR"
 };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     const agendaDiv = document.getElementById("agenda");
 
-    const horas = generarTurnos("08:00", "22:00");
-
-    function generarTurnos(inicio, fin) {
-      const turnos = [];
-      let [h, m] = inicio.split(":").map(Number);
-      const [hFin, mFin] = fin.split(":").map(Number);
-
-      while (h < hFin || (h === hFin && m < mFin)) {
-        const hora = `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
-        turnos.push(hora);
-        m += 30;
-        if (m === 60) {
-          h++;
-          m = 0;
-        }
-      }
-      return turnos;
-    }
-
-    function mostrarAgenda(data = {}) {
+    const cargarTurnos = async () => {
       agendaDiv.innerHTML = "";
-      horas.forEach(hora => {
-        const ocupado = data[hora];
+      const snapshot = await db.collection("turnos").orderBy("hora").get();
+      snapshot.forEach(doc => {
+        const turno = doc.data();
         const div = document.createElement("div");
-        div.className = `turno ${ocupado ? "ocupado" : "libre"}`;
-        div.innerHTML = `<strong>${hora}</strong><br>`;
-        if (!ocupado) {
-          const boton = document.createElement("button");
-          boton.textContent = "Reservar";
-          boton.onclick = () => reservarTurno(hora);
-          div.appendChild(boton);
-        } else {
-          div.innerHTML += "<small>Ocupado</small>";
-        }
+        div.className = "turno";
+        div.innerHTML = `
+          <div>
+            <strong>${turno.hora}</strong><br>
+            ${
+              turno.disponible
+                ? '<span class="disponible">Disponible</span>'
+                : `<span class="reservado">Reservado por ${turno.nombre}</span>`
+            }
+          </div>
+          ${
+            turno.disponible
+              ? `<button onclick="reservarTurno('${doc.id}', '${turno.hora}')">Reservar</button>`
+              : `<button disabled>Ocupado</button>`
+          }
+        `;
         agendaDiv.appendChild(div);
       });
-    }
+    };
 
-    function reservarTurno(hora) {
-      set(ref(db, "turnos/" + hora), true);
-    }
+    const reservarTurno = (id, hora) => {
+      const nombre = prompt(`¿A nombre de quién reservo el turno de las ${hora}?`);
+      if (!nombre) return;
+      db.collection("turnos").doc(id).update({
+        disponible: false,
+        nombre: nombre
+      }).then(() => {
+        alert("¡Turno reservado con éxito!");
+        cargarTurnos();
+      });
+    };
 
-    // Escuchar cambios en la base de datos
-    const turnosRef = ref(db, "turnos");
-    onValue(turnosRef, snapshot => {
-      const data = snapshot.val() || {};
-      mostrarAgenda(data);
-    });
+    cargarTurnos();
   </script>
 </body>
 </html>
-
