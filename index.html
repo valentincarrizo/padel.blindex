@@ -1,3 +1,106 @@
-<h1>PADEL BLINDEX - Tres Algarrobos</h1>
-<h2>Reserva tu turno</h2>
-<h3>Canchas disponibles</h3>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Padel Blindex - Tres Algarrobos</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #3e8ef7, #6dd5ed);
+      margin: 0;
+      padding: 0;
+      color: #fff;
+      text-align: center;
+    }
+
+    header {
+      background-color: rgba(0, 0, 0, 0.3);
+      padding: 1.5em;
+      font-size: 1.8em;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .subtitulo {
+      font-size: 1.2em;
+      margin-top: -10px;
+      font-weight: normal;
+      color: #ffe;
+    }
+
+    .agenda {
+      max-width: 600px;
+      margin: 2em auto;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1em;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .turno {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.15);
+      margin: 0.5em 0;
+      padding: 1em;
+      border-radius: 8px;
+    }
+
+    .hora {
+      font-size: 1.2em;
+    }
+
+    .boton {
+      background-color: #00c851;
+      color: white;
+      border: none;
+      padding: 0.5em 1em;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .boton:hover {
+      background-color: #007e33;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    PADEL BLINDEX
+    <div class="subtitulo">Tres Algarrobos</div>
+  </header>
+
+  <section class="agenda">
+    <h2>Agenda de Turnos</h2>
+
+    <!-- Turnos de ejemplo, podés duplicar y cambiar los horarios -->
+    <div class="turno">
+      <div class="hora">10:00 - 10:30</div>
+      <button class="boton">Reservar</button>
+    </div>
+    <div class="turno">
+      <div class="hora">10:30 - 11:00</div>
+      <button class="boton">Reservar</button>
+    </div>
+    <div class="turno">
+      <div class="hora">11:00 - 11:30</div>
+      <button class="boton">Reservar</button>
+    </div>
+    <div class="turno">
+      <div class="hora">11:30 - 12:00</div>
+      <button class="boton">Reservar</button>
+    </div>
+    <div class="turno">
+      <div class="hora">12:00 - 12:30</div>
+      <button class="boton">Reservar</button>
+    </div>
+
+    <!-- Agregá más turnos según lo que quieras cubrir -->
+  </section>
+
+</body>
+</html>
