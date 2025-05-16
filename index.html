@@ -43,15 +43,15 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCbF1MRSNxEShlOZ2PIPH1op91CvIiUexI",
-      authDomain: "TU_DOMINIO.firebaseapp.com",
-      databaseURL: "https://TU_DOMINIO.firebaseio.com",
-      projectId: "TU_PROJECT_ID",
-      storageBucket: "TU_BUCKET.appspot.com",
-      messagingSenderId: "TU_MESSAGING_ID",
-      appId: "TU_APP_ID"
-    };
+const firebaseConfig = {
+  apiKey: "AIzaSyCbF1MRSNxEShlOZ2PIPH1op91CvIiUexI",
+  authDomain: "padel-blindex.firebaseapp.com",
+  projectId: "padel-blindex",
+  storageBucket: "padel-blindex.firebasestorage.app",
+  messagingSenderId: "584258566195",
+  appId: "1:584258566195:web:0be432309ca1006c488b46",
+  measurementId: "G-SMPLB9YYMR"
+};
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
