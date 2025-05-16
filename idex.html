@@ -1,1 +1,140 @@
-<h2>holaa mundoo</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Padel Blindex - Tres Algarrobos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f1f1;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    main {
+      padding: 20px;
+    }
+    .turno {
+      background: white;
+      border: 1px solid #ccc;
+      border-left: 5px solid #007bff;
+      margin-bottom: 10px;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 8px;
+    }
+    .disponible {
+      color: green;
+      font-weight: bold;
+    }
+    .reservado {
+      color: red;
+      font-weight: bold;
+    }
+    button {
+      padding: 5px 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    🏓 Padel Blindex - Tres Algarrobos 🏓
+  </header>
+  <main id="agenda">
+    Cargando turnos...
+  </main>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    // ⚠️ Reemplazá esta parte con tu configuración real de Firebase:
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCbF1MRSNxEShlOZ2PIPH1op91CvIiUexI",
+  authDomain: "padel-blindex.firebaseapp.com",
+  projectId: "padel-blindex",
+  storageBucket: "padel-blindex.firebasestorage.app",
+  messagingSenderId: "584258566195",
+  appId: "1:584258566195:web:0be432309ca1006c488b46",
+  measurementId: "G-SMPLB9YYMR"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const agendaDiv = document.getElementById("agenda");
+
+    const cargarTurnos = async () => {
+      agendaDiv.innerHTML = "";
+      const snapshot = await db.collection("turnos").orderBy("hora").get();
+      snapshot.forEach(doc => {
+        const turno = doc.data();
+        const div = document.createElement("div");
+        div.className = "turno";
+        div.innerHTML = `
+          <div>
+            <strong>${turno.hora}</strong><br>
+            ${
+              turno.disponible
+                ? '<span class="disponible">Disponible</span>'
+                : `<span class="reservado">Reservado por ${turno.nombre}</span>`
+            }
+          </div>
+          ${
+            turno.disponible
+              ? `<button onclick="reservarTurno('${doc.id}', '${turno.hora}')">Reservar</button>`
+              : `<button disabled>Ocupado</button>`
+          }
+        `;
+        agendaDiv.appendChild(div);
+      });
+    };
+
+    const reservarTurno = (id, hora) => {
+      const nombre = prompt(`¿A nombre de quién reservo el turno de las ${hora}?`);
+      if (!nombre) return;
+      db.collection("turnos").doc(id).update({
+        disponible: false,
+        nombre: nombre
+      }).then(() => {
+        alert("¡Turno reservado con éxito!");
+        cargarTurnos();
+      });
+    };
+
+    cargarTurnos();
+  </script>
+</body>
+</html>
