@@ -6,35 +6,34 @@
   <title>Padel Blindex - Tres Algarrobos</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f0f0;
       margin: 0;
-      padding: 0;
     }
     header {
       background-color: #1e90ff;
       color: white;
-      padding: 20px;
       text-align: center;
+      padding: 20px 10px;
       font-size: 28px;
       font-weight: bold;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     main {
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 10px;
     }
     .turno {
       background: white;
-      border: 1px solid #ddd;
       border-left: 6px solid #1e90ff;
-      margin-bottom: 12px;
       padding: 15px;
+      margin-bottom: 12px;
+      border-radius: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
     .disponible {
       color: green;
@@ -45,16 +44,16 @@
       font-weight: bold;
     }
     button {
-      padding: 6px 12px;
-      background: #1e90ff;
-      color: white;
+      background-color: #1e90ff;
       border: none;
+      padding: 8px 14px;
+      color: white;
       border-radius: 5px;
       cursor: pointer;
       font-weight: bold;
     }
     button:disabled {
-      background: #ccc;
+      background-color: #ccc;
       cursor: not-allowed;
     }
   </style>
@@ -63,9 +62,7 @@
   <header>
     🏓 Padel Blindex - Tres Algarrobos
   </header>
-  <main id="agenda">
-    Cargando turnos...
-  </main>
+  <main id="agenda">Cargando turnos...</main>
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -84,7 +81,6 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-
     const agendaDiv = document.getElementById("agenda");
 
     const cargarTurnos = async () => {
